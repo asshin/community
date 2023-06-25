@@ -1,0 +1,8 @@
+#mybatis-plus:
+#  mapper-locations: classpath*:/mapper/*.xml
+spring:
+  datasource:
+    username: root
+    password: 857541
+    url: jdbc:mysql://124.221.96.75:3306/cqupt_community
+    driver-class-name: com.mysql.cj.jdbc.Driver
