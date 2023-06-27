@@ -1,5 +1,6 @@
 package com.cqupt.community.controller;
 
+import com.cqupt.community.LoginRequired;
 import com.cqupt.community.entity.User;
 import com.cqupt.community.service.UserService;
 import com.cqupt.community.util.CommunityUtil;
@@ -42,10 +43,13 @@ public class UserController {
     UserService userService;
     @Autowired
     HostHolder hostHolder;
+
+    @LoginRequired
     @RequestMapping(value = "/setting",method = RequestMethod.GET)
     public  String getSettingPage(){
         return  "/site/setting";
     }
+    @LoginRequired
     @RequestMapping(value = "/upload",method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model){
         if (headerImage==null){
