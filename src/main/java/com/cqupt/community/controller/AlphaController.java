@@ -1,5 +1,6 @@
 package com.cqupt.community.controller;
 
+import com.cqupt.community.util.CommunityUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +39,14 @@ public class AlphaController {
 
         return username;
 
+    }
+
+    //ajax示例
+    @RequestMapping(path = "/ajax",method = RequestMethod.POST)
+
+    public  String testAjax(String name,int age){
+        System.out.println(name);
+        System.out.println(age);
+        return  "sucess";
     }
 }
