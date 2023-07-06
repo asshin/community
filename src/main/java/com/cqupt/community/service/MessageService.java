@@ -39,14 +39,14 @@ public class MessageService {
         return messageMapper.selectMessageUnreadCount(userId, conversationId);
     }
 
-//    public int addMessage(Message message) {
-//        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
-//        message.setContent(sensitiveFilter.filter(message.getContent()));
-//        return messageMapper.insertMessage(message);
-//    }
+    public int addMessage(Message message) {
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        message.setContent(sensitiveFilter.filter(message.getContent()));
+        return messageMapper.insertMessage(message);
+    }
 
-//    public int readMessage(List<Integer> ids) {
-//        return messageMapper.updateStatus(ids, 1);
-//    }
+    public int readMessage(List<Integer> ids) {
+        return messageMapper.updateMessageStatus(ids, 1);
+    }
 
 }
