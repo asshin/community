@@ -18,9 +18,9 @@ public interface  MessageMapper {
     int selectConversationsCount(int userId);
 
     //查询某个会话所包含的私信列表
-     List<Message> selectMessageByConversation(String conversation ,int offset,int limit);
+     List<Message> selectMessageByConversation(String conversationId ,int offset,int limit);
     //查询某个会话包含的私信数量
-     int selectMessageCountByConversation(String conversation);
+     int selectMessageCountByConversation(String conversationId);
     //查询未读私信的数量
     int  selectMessageUnreadCount(int userId,String conversationId);
 

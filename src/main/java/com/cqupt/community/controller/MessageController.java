@@ -9,9 +9,11 @@ import com.cqupt.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.jws.WebParam;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,5 +68,42 @@ public class MessageController {
 
 
 
+    }
+    @RequestMapping(path = "/letter/detail/{conversationId}",method = RequestMethod.GET)
+    public String getLetterDetail(@PathVariable("conversationId") String conversationId,Page page,  Model model){
+        User user = hostHolder.getUser();
+        //分页信息
+        page.setLimit(5);
+        page.setPath("/letter/detail");
+        page.setRows(messageService.findLetterCount(conversationId));
+
+        //私信列表
+        List<Message> letterList = messageService.findLetters(conversationId, page.getOffset(), page.getLimit());
+        ArrayList<Map<String,Object>> letters = new ArrayList<>();
+        if (letterList!=null){
+            for (Message message : letterList) {
+
+                HashMap<String , Object> map = new HashMap<>();
+                map.put("letter",message);
+                map.put("fromUser",userService.getUserById(message.getFromId()));
+                letters.add(map);
+            }
+
+        }
+        model.addAttribute("letters",letters);
+        //私信目标
+        model.addAttribute("target",getletterTarget(conversationId));
+        return  "/site/letter-detail";
+    }
+
+    private  User getletterTarget(String conversationId){
+        String []ids =conversationId.split("_");
+        int d0=Integer.parseInt(ids[0]);
+        int d1=Integer.parseInt(ids[1]);
+        if (hostHolder.getUser().getId()==d0){
+            return  userService.getUserById(d1);
+        }else {
+            return  userService.getUserById(d0);
+        }
     }
 }
