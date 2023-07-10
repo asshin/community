@@ -26,13 +26,13 @@ public class LikeController {
 
     @RequestMapping(path = "/like",method = RequestMethod.POST)
     @ResponseBody
-    public  String like(int entityType,int entityId){
+    public  String like(int entityType,int entityId,int entityUserId){
         User user = hostHolder.getUser();
             if (user==null){
                throw  new NullPointerException("用户为登录");
             }
             //点赞
-            likeService.like(user.getId(),entityType,entityId);
+            likeService.like(user.getId(),entityUserId,entityType,entityId);
             //数量
             long likeCount =likeService.findEntityLikeCount(entityType,entityId);
             //状态

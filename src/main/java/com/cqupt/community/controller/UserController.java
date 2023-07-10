@@ -2,6 +2,7 @@ package com.cqupt.community.controller;
 
 import com.cqupt.community.LoginRequired;
 import com.cqupt.community.entity.User;
+import com.cqupt.community.service.LikeService;
 import com.cqupt.community.service.UserService;
 import com.cqupt.community.util.CommunityUtil;
 import com.cqupt.community.util.HostHolder;
@@ -43,7 +44,8 @@ public class UserController {
     UserService userService;
     @Autowired
     HostHolder hostHolder;
-
+    @Autowired
+    LikeService likeService;
     @LoginRequired
     @RequestMapping(value = "/setting",method = RequestMethod.GET)
     public  String getSettingPage(){
@@ -104,5 +106,22 @@ public class UserController {
         }
 
 
+    }
+
+    //个人主页
+    @RequestMapping(path = "/profile/{userId}",method = RequestMethod.GET)
+    public  String getProfilePage(@PathVariable("userId") int userId,Model model){
+        User user=userService.getUserById(userId);
+        if (user==null){
+            throw  new RuntimeException("您还未登录");
+
+        }
+        //用户
+        model.addAttribute("user",user);
+        //点赞数量
+        int likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("likeCount",likeCount);
+
+        return "/site/profile";
     }
 }
