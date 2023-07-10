@@ -11,11 +11,17 @@ public class AlphaAspect {
     public void pointcut() {
 
     }
+    @Pointcut("execution(* com.cqupt.community.service.LikeService.like(..))")
+    public void likecut() {
 
-    @Before("pointcut()")
-    public void before() {
-        System.out.println("before");
     }
+    @Before("likecut()")
+    public void before() {
+
+
+    }
+    //
+
 
     @After("pointcut()")
     public void after() {
@@ -34,7 +40,6 @@ public class AlphaAspect {
 
     @Around("pointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("around before");
         Object obj = joinPoint.proceed();
         System.out.println("around after");
         return obj;

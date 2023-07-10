@@ -4,7 +4,10 @@ import com.cqupt.community.entity.DiscussPost;
 import com.cqupt.community.entity.Page;
 import com.cqupt.community.entity.User;
 import com.cqupt.community.service.DiscussPostService;
+import com.cqupt.community.service.LikeService;
 import com.cqupt.community.service.UserService;
+import com.cqupt.community.util.CommunityConstant;
+import com.cqupt.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +24,13 @@ import java.util.Map;
  * @create 2023-06-09 16:37
  */
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
     @Autowired
     private DiscussPostService discussPostService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LikeService likeService;
     @RequestMapping(path = "/index",method = RequestMethod.GET)
     public  String getIndexPage(Model model, Page page){
         // 方法调用之前，springmvc会自动实例化model和page，并将page注入model
@@ -39,6 +44,9 @@ public class HomeController {
             HashMap<String , Object>  map = new HashMap<>();
             map.put("post",discussPost);
             map.put("user",user);
+            long entityLikeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPost.getId());
+            map.put("likeCount",entityLikeCount);
+
             discussPosts.add(map);
 
         }
