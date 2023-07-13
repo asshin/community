@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author zsw
@@ -44,7 +45,11 @@ public class UserService  implements CommunityConstant {
     private  String domain;
 
     public User getUserById(int id){
-        return userMapper.getUserById(id);
+        User user = getCache(id);
+        if (user==null){
+            user=initCache(id);
+        }
+        return user;
     }
 
     public Map<String,Object> register(User user){
@@ -104,6 +109,7 @@ public class UserService  implements CommunityConstant {
             return  ACTIVATION_REPEAT;
         }else if (user.getActivationCode().equals(code)){
             userMapper.updateStatus(userId,1);
+            clearCache(userId);
             return  ACTIVATION_SUCCESS;
         }else {
             return  ACTIVATION_FAILURE;
@@ -163,10 +169,32 @@ public class UserService  implements CommunityConstant {
         return  (LoginTicket) redisTemplate.opsForValue().get(RedisKeyUtil.getTicketKey(ticket));
     }
     public  int updateHeader(int userId,String headerUrl){
-        return  userMapper.updateHeader(userId,headerUrl);
+        int rows = userMapper.updateHeader(userId, headerUrl);
+        clearCache(userId);
+        return   rows;
     }
     public  User getUserByName(String name){
         User user = userMapper.getUserByUsername(name);
         return  user;
+    }
+
+    //1.优先从缓存中取值
+    private  User getCache(int userId){
+        String redisKey = RedisKeyUtil.getUserKey(userId);
+        return  (User)redisTemplate.opsForValue().get(redisKey);
+
+    }
+    //2.取不到时初始化缓存
+    private  User initCache(int userId){
+        User user = userMapper.getUserById(userId);
+        String redisKey = RedisKeyUtil.getUserKey(userId);
+       redisTemplate.opsForValue().set(redisKey,user,3600, TimeUnit.SECONDS);
+        return user;
+    }
+    //3.数据变更时清除缓存
+    private  void clearCache(int userId){
+        String redisKey = RedisKeyUtil.getUserKey(userId);
+        redisTemplate.delete(redisKey);
+
     }
 }
