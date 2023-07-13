@@ -1,6 +1,6 @@
 package com.cqupt.community.service;
 
-import com.cqupt.community.dao.LoginTicketMapper;
+
 import com.cqupt.community.dao.UserMapper;
 import com.cqupt.community.entity.LoginTicket;
 import com.cqupt.community.entity.User;
@@ -8,9 +8,11 @@ import com.cqupt.community.util.CommunityConstant;
 import com.cqupt.community.util.CommunityUtil;
 import com.cqupt.community.util.MailClient;
 
+import com.cqupt.community.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -33,7 +35,8 @@ public class UserService  implements CommunityConstant {
     @Autowired
     private TemplateEngine templateEngine;
     @Autowired
-    private   LoginTicketMapper loginTicketMapper;
+    RedisTemplate redisTemplate;
+//    private   LoginTicketMapper loginTicketMapper;
     @Value("${server.servlet.context-path}")
 
     private  String contextPath;
@@ -141,18 +144,23 @@ public class UserService  implements CommunityConstant {
         loginTicket.setTicket(CommunityUtil.gennerateUUid());
         loginTicket.setStatus(0);
         loginTicket.setExpired(new Date(System.currentTimeMillis()+1000*expiredSeconds));
-        loginTicketMapper.insertLoginTicket(loginTicket);
-
+//        loginTicketMapper.insertLoginTicket(loginTicket);
+        String rediskey= RedisKeyUtil.getTicketKey(loginTicket.getTicket());
+        redisTemplate.opsForValue().set(rediskey,loginTicket);
         map.put("ticket",loginTicket.getTicket());
         return map;
     }
 
     public void logout(String ticket) {
-        loginTicketMapper.updateStatus(ticket,1);
+        String rediskey= RedisKeyUtil.getTicketKey(ticket);
+        LoginTicket loginTicket =(LoginTicket) redisTemplate.opsForValue().get(rediskey);
+        loginTicket.setStatus(1);
+        redisTemplate.opsForValue().set(rediskey,loginTicket);
     }
 
     public  LoginTicket findLoginTicket(String ticket){
-        return  loginTicketMapper.selectByTicket(ticket);
+
+        return  (LoginTicket) redisTemplate.opsForValue().get(RedisKeyUtil.getTicketKey(ticket));
     }
     public  int updateHeader(int userId,String headerUrl){
         return  userMapper.updateHeader(userId,headerUrl);

@@ -2,7 +2,7 @@ package com.cqupt.community;
 
 import com.cqupt.community.CommunityApplication;
 import com.cqupt.community.dao.DiscussPostMapper;
-import com.cqupt.community.dao.LoginTicketMapper;
+//import com.cqupt.community.dao.LoginTicketMapper;
 import com.cqupt.community.entity.DiscussPost;
 
 import com.cqupt.community.entity.LoginTicket;
@@ -26,8 +26,8 @@ import java.util.List;
 public class MapperTest {
     @Autowired
     DiscussPostMapper discussPostMapper;
-    @Autowired
-    LoginTicketMapper loginTicketMapper;
+//    @Autowired
+//    LoginTicketMapper loginTicketMapper;
     @Test
     public  void discussPostTest(){
         List<DiscussPost> discussPosts = discussPostMapper.selectDiscussPosts(149, 0, 10);
@@ -44,13 +44,13 @@ public class MapperTest {
         loginTicket.setTicket("abc");
         loginTicket.setStatus(0);
         loginTicket.setExpired(new Date(System.currentTimeMillis()+1000*60*10));
-        loginTicketMapper.insertLoginTicket(loginTicket);
+//        loginTicketMapper.insertLoginTicket(loginTicket);
     }
     @Test
     public void LoginTicketSelectTest(){
-        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
-        System.out.println(loginTicket.getTicket()+":"+loginTicket.getStatus());
-        loginTicketMapper.updateStatus(loginTicket.getTicket(),1);
-        System.out.println(loginTicket.getTicket()+":"+loginTicket.getStatus());
+//        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+//        System.out.println(loginTicket.getTicket()+":"+loginTicket.getStatus());
+//        loginTicketMapper.updateStatus(loginTicket.getTicket(),1);
+//        System.out.println(loginTicket.getTicket()+":"+loginTicket.getStatus());
     }
 }
