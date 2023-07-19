@@ -34,4 +34,17 @@
         and entity_type=#{entityType}
         and entity_id=#{entityId}
     </select>
+    <select id="findCommentsById" resultType="com.cqupt.community.entity.Comment">
+
+
+    </select>
+    <select id="findCommentById" resultType="com.cqupt.community.entity.Comment">
+        select <include refid="selectFields"></include>
+        from comment
+        where  status=0
+
+        and id=#{Id}
+
+    </select>
+
 </mapper>

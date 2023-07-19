@@ -35,7 +35,10 @@ public class ServiceLogAspect {
 attributes.getRequest()：这个方法调用从ServletRequestAttributes实例中获取底层的HttpServletRequest对象。getRequest()方法返回与当前线程关联的当前请求对象。
 通过执行这些代码行，您将可以访问HttpServletRequest对象，从而可以检索关于传入请求的信息，例如头信息、参数和请求URL等。*/
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+        if (attributes==null){
+           return;
+        }
+        HttpServletRequest request = attributes.getRequest();//通过消费者调用service时没有request（不是通过controller掉的）
         String ip = request.getRemoteHost();
         String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         String target = joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName();
