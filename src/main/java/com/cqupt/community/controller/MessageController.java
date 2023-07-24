@@ -172,12 +172,14 @@ public class MessageController  implements CommunityConstant {
             messageVo.put("count",noticeCount);
             int noticeUnread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_COMMENT);
             messageVo.put("unread",noticeUnread);
+            model.addAttribute("commentNotice",messageVo);
         }
-        model.addAttribute("commentNotice",messageVo);
+
         //查询点赞类的通知
         latestNotice = messageService.findLatestNotice(user.getId(), TOPIC_LIKE);
-        messageVo = new HashMap<>();//TODO 如果没有消息T
+
         if (latestNotice!=null){
+            messageVo = new HashMap<>();//TODO 如果没有消息T
             messageVo.put("message",latestNotice);
             String content = HtmlUtils.htmlUnescape(latestNotice.getContent());
             HashMap<String,Object> data = JSONObject.parseObject(content, HashMap.class);
@@ -189,12 +191,14 @@ public class MessageController  implements CommunityConstant {
             messageVo.put("count",noticeCount);
             int noticeUnread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_LIKE);
             messageVo.put("unread",noticeUnread);
+            model.addAttribute("likeNotice",messageVo);
         }
-        model.addAttribute("likeNotice",messageVo);
+
         //查询关注类的通知
         latestNotice = messageService.findLatestNotice(user.getId(), TOPIC_FOLLOW);
-        messageVo = new HashMap<>();
+
         if (latestNotice!=null){
+            messageVo = new HashMap<>();
             messageVo.put("message",latestNotice);
             String content = HtmlUtils.htmlUnescape(latestNotice.getContent());
             HashMap<String,Object> data = JSONObject.parseObject(content, HashMap.class);
@@ -205,8 +209,9 @@ public class MessageController  implements CommunityConstant {
             messageVo.put("count",noticeCount);
             int noticeUnread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_FOLLOW);
             messageVo.put("unread",noticeUnread);
+            model.addAttribute("followNotice",messageVo);
         }
-        model.addAttribute("followNotice",messageVo);
+
         //查询私信未读消息数量
         int letterUnreadCount = messageService.findLetterUnreadCount(user.getId(), null);
         model.addAttribute("letterUnreadCount",letterUnreadCount);
